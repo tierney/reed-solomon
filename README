@@ -1,4 +1,12 @@
-reed-solomon
+README for Reed-Solomon Library
 ============
 
 Reed-Solomon Library (Ported to userspace from Linux Kernel)
+
+This library is code from the Linux Kernel ported to userspace. The example
+program demonstrates the use of the RS(255,223) Reed-Solomon FEC with generator
+polynomial 0x187.
+
+./autogen.sh
+./configure
+make

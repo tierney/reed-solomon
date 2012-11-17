@@ -10,8 +10,9 @@ AC_CONFIG_HEADERS([config.h])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
-AC_PROG_RANLIB
 AM_INIT_AUTOMAKE([])
+
+LT_INIT([])
 
 AC_DEFINE(CONFIG_REED_SOLOMON_ENC8, 1, Reed Solomon encoding word length)
 AC_DEFINE(CONFIG_REED_SOLOMON_DEC8, 1, Reed Solomon decoding word length)
