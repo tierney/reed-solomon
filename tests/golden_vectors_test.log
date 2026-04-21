@@ -1,0 +1,4 @@
+All Zeros: PASS
+All Ones: PASS
+Incrementing: PASS
+PASS golden_vectors_test (exit status: 0)

@@ -23,6 +23,38 @@ static void shuffle(int *array, int n) {
     }
 }
 
+static int run_parity_error_test(struct rs_control *rs) {
+    uint8_t original[DATALEN];
+    uint8_t working[DATALEN];
+    uint16_t parity[NROOTS];
+    uint16_t original_parity[NROOTS];
+    int i;
+
+    for (i = 0; i < DATALEN; i++) original[i] = rand() % 256;
+    memcpy(working, original, DATALEN);
+    memset(parity, 0, sizeof(parity));
+
+    if (encode_rs8(rs, working, DATALEN, parity, 0) != 0) return -1;
+    memcpy(original_parity, parity, sizeof(parity));
+
+    // Flip bits in parity
+    int parity_err_pos = rand() % NROOTS;
+    parity[parity_err_pos] ^= (uint16_t)(rand() % 255 + 1);
+
+    // Add some errors in data too (within capacity)
+    int data_err_pos = rand() % DATALEN;
+    working[data_err_pos] ^= (uint8_t)(rand() % 255 + 1);
+
+    // Total errors = 2. Capacity = 16. Should pass.
+    int corrected = decode_rs8(rs, working, parity, DATALEN, NULL, 0, NULL, 0, NULL);
+    
+    if (corrected < 0) return -2;
+    if (memcmp(working, original, DATALEN) != 0) return -3;
+    if (memcmp(parity, original_parity, sizeof(parity)) != 0) return -4; // Parity not corrected!
+
+    return 0;
+}
+
 static int run_random_test(struct rs_control *rs, int num_errors, int num_erasures) {
     uint8_t original[DATALEN];
     uint8_t working[DATALEN];
@@ -109,6 +141,14 @@ int main(void) {
         }
     }
     printf("Passed 100 iterations of uncorrectable error detection.\n");
+
+    for (i = 0; i < TOTAL_TESTS; i++) {
+        if (run_parity_error_test(rs) != 0) {
+            fprintf(stderr, "Failed parity correction test at iteration %d\n", i);
+            return 1;
+        }
+    }
+    printf("Passed %d iterations of parity error correction.\n", TOTAL_TESTS);
 
     free_rs(rs);
     return 0;
