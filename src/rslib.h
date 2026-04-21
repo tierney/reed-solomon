@@ -27,6 +27,10 @@ extern "C" {
 
 #include <string.h>
 
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
 #include "config.h"
 #include "list.h"
 

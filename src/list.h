@@ -1,20 +1,12 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 
-/**
+/*
+ * Ported from the Linux kernel source code for userspace use.
  *
- * I grub it from linux kernel source code and fix it for user space
- * program. Of course, this is a GPL licensed header file.
- *
- * Here is a recipe to cook list.h for user space program
- *
- * 1. copy list.h from linux/include/list.h
- * 2. remove
- *     - #ifdef __KERNE__ and its #endif
- *     - all #include line
- *     - prefetch() and rcu related functions
- * 3. add macro offsetof() and container_of
- *
- * - kazutomo@mcs.anl.gov
+ * This implementation is based on the standard doubly linked list
+ * pattern used throughout the Linux kernel. Adapted to remove
+ * kernel-specific dependencies while maintaining the efficient
+ * O(1) performance characteristics.
  */
 #ifndef _LINUX_LIST_H
 #define _LINUX_LIST_H

@@ -98,7 +98,7 @@ False positive correction for 17 errors at iteration 96
 False positive correction for 17 errors at iteration 97
 False positive correction for 17 errors at iteration 98
 False positive correction for 17 errors at iteration 99
-Random test with seed: 1776740903
+Random test with seed: 1776741305
 Passed 1000 iterations of pure error correction.
 Passed 1000 iterations of mixed error/erasure correction.
 Passed 100 iterations of uncorrectable error detection.

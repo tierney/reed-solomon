@@ -269,8 +269,7 @@
 
 		/* lambda[i+1] for i even is the formal derivative
 		 * lambda_pr of lambda[i] */
-		for (i = ((deg_lambda <= nroots - 1) ? deg_lambda : nroots - 1) & ~1;
-		     i >= 0; i -= 2) {
+		for (i = min(deg_lambda, nroots - 1) & ~1; i >= 0; i -= 2) {
 			if (lambda[i + 1] != nn) {
 				den ^= alpha_to[rs_modnn(rs, lambda[i + 1] +
 						       i * root[j])];

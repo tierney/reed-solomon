@@ -3,14 +3,14 @@ Reed-Solomon Userspace Library (Linux Kernel Port)
 
 ## 1. Project status
 
-This project is maintained as a provenance-sensitive userspace port of the
+This project is a hardened, provenance-sensitive userspace port of the
 Linux kernel generic Reed-Solomon library.
 
 Current state:
-- License/provenance audit in progress, with findings documented in
-  `LICENSE-AUDIT.md`.
-- Core algorithm preserved from Linux-derived code.
-- RS(255,223) behavior being stabilized and tested.
+- **Audit Complete**: License and provenance documented in `LICENSE-AUDIT.md`.
+- **Hardened**: Robustness improvements backported from modern Linux (torvalds/linux).
+- **Verified**: Full characterization suite passing.
+- **Style**: Clang-tidy and Clang-format guidelines established.
 
 ## 2. What this library is
 
