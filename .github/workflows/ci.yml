@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y autoconf automake libtool make gcc g++
+      - name: Bootstrap
+        run: ./autogen.sh
+      - name: Configure
+        run: ./configure CFLAGS="-O2 -Wall -Wextra" CXXFLAGS="-O2 -Wall -Wextra"
+      - name: Build
+        run: make -j"$(nproc)"
+      - name: Test
+        run: make check
+
+  distcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y autoconf automake libtool make gcc g++
+      - name: Bootstrap
+        run: ./autogen.sh
+      - name: Configure
+        run: ./configure
+      - name: Distcheck
+        run: make distcheck
+
+  sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y autoconf automake libtool make gcc g++
+      - name: Bootstrap
+        run: ./autogen.sh
+      - name: Configure (sanitizers)
+        run: ./configure --enable-sanitizers CC=gcc CXX=g++
+      - name: Build
+        run: make -j"$(nproc)"
+      - name: Test
+        run: make check

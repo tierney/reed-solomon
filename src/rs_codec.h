@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-2.0-only
+
 #ifndef _RS_CODEC_H_
 #define _RS_CODEC_H_
 
@@ -15,16 +17,18 @@ const int kParityArraySize = 32;
 class RsCodec {
  public:
   RsCodec();
-
   virtual ~RsCodec();
 
-  int Encode(uint8_t *data, uint16_t *parity);
+  // Non-copyable
+  RsCodec(const RsCodec&) = delete;
+  RsCodec& operator=(const RsCodec&) = delete;
 
+  int Encode(uint8_t *data, uint16_t *parity);
   int Decode(uint8_t *data, uint16_t *parity);
 
  private:
   // The memory for an rs_control must be managed explicitly using the ported APIs.
-  rs_control *rs_;
+  rs_control *rs_ = nullptr;
 };
 
 } // namespace cryptogram

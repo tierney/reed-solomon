@@ -1,4 +1,5 @@
-// Copyright 2012. The Cryptogram Authors. BSD License.
+// SPDX-License-Identifier: GPL-2.0-only
+// Copyright 2012 The Cryptogram Authors.
 // Author: tierney@cs.nyu.edu (Matt Tierney)
 
 #include "rs_codec.h"

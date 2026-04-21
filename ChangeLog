@@ -1,0 +1,5 @@
+2026-04-20  Repository modernization work
+	* Add provenance and license audit documentation.
+	* Align repository licensing intent to GPL-2.0-only for Linux-derived code.
+	* Stabilize decode error handling and mutex initialization in userspace.
+	* Add RS(255,223) regression tests and modernized project documentation.

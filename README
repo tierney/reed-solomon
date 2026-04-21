@@ -1,12 +1,109 @@
-README for Reed-Solomon Library
-============
+Reed-Solomon Userspace Library (Linux Kernel Port)
+==================================================
 
-Reed-Solomon Library (Ported to userspace from Linux Kernel)
+## 1. Project status
 
-This library is code from the Linux Kernel ported to userspace. The example
-program demonstrates the use of the RS(255,223) Reed-Solomon FEC with generator
-polynomial 0x187.
+This project is maintained as a provenance-sensitive userspace port of the
+Linux kernel generic Reed-Solomon library.
 
+Current state:
+- License/provenance audit in progress, with findings documented in
+  `LICENSE-AUDIT.md`.
+- Core algorithm preserved from Linux-derived code.
+- RS(255,223) behavior being stabilized and tested.
+
+## 2. What this library is
+
+This repository contains a userspace port of Linux kernel Reed-Solomon code.
+It provides a generic runtime-configurable API (`init_rs`, `encode_rs8`,
+`decode_rs8`, `free_rs`) and a simple C++ wrapper used in Cryptagram-era code.
+
+The key compatibility target is RS(255,223):
+- 255 total symbols
+- 223 data symbols
+- 32 parity symbols
+- up to 16 symbol errors correctable
+- primitive polynomial `0x187`
+
+## 3. What this library is not
+
+- It is not encryption.
+- It is not an original-from-scratch Reed-Solomon implementation.
+- It is not a full mirror of current Linux kernel internals.
+
+## 4. Linux kernel provenance
+
+The core source files are Linux-derived and keep original author attribution:
+Thomas Gleixner and Phil Karn.
+
+See:
+- `docs/linux-provenance.md`
+- `docs/linux-upstream-comparison.md`
+
+## 5. Cryptagram historical use case
+
+This library was used in Cryptagram-style forward error correction, where a
+byte stream could survive lossy JPEG recompression and recover from byte
+corruption during decode.
+
+See: `docs/cryptagram-use-case.md`
+
+## 6. Quick start
+
+```
 ./autogen.sh
 ./configure
 make
+make check
+make distcheck
+```
+
+## 7. Build from source
+
+Prerequisites:
+- autoconf
+- automake
+- libtool
+- C and C++ compiler toolchain
+
+If autotools are unavailable on your system, see `STATUS.md` for current
+limitations.
+
+Useful configure options:
+- `--disable-strict-warnings` to relax warning flags
+- `--enable-sanitizers` for address/undefined sanitizer builds
+
+## 8. Example: RS(255,223)
+
+The sample program `src/rs_main.cc` uses RS(255,223) parameters with
+`gfpoly=0x187` and `nroots=32`.
+
+## 9. API overview
+
+See `docs/api.md`.
+
+## 10. Tests
+
+Tests live under `tests/` and are run by `make check`.
+
+See `docs/test-vectors.md`.
+
+## 11. Upstream comparison
+
+The project compares against current trusted upstream `torvalds/linux` and
+documents userspace-relevant differences before adopting changes.
+
+## 12. License and provenance
+
+This repository should be treated as Linux-derived GPL-2.0-only code unless
+documented otherwise for specific files.
+
+See:
+- `COPYING`
+- `LICENSE-AUDIT.md`
+
+## 13. Limitations
+
+- This port intentionally preserves legacy Linux-derived API semantics.
+- Kernel-only facilities are adapted for userspace and may differ from current
+  upstream implementation details.

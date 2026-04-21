@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+
 /*
  * lib/reed_solomon/decode_rs.c
  *
@@ -39,7 +41,12 @@
 
 	/* Check length parameter for validity */
 	pad = nn - nroots - len;
-  assert(!(pad < 0 || pad >= nn));
+	if (pad < 0 || pad >= nn)
+		return -EINVAL;
+	if (no_eras < 0 || no_eras > nroots)
+		return -EINVAL;
+	if (no_eras > 0 && eras_pos == NULL)
+		return -EINVAL;
 
 	/* Does the caller provide the syndrome ? */
 	if (s != NULL)
@@ -202,8 +209,7 @@
 		 * deg(lambda) unequal to number of roots => uncorrectable
 		 * error detected
 		 */
-    count = -74; // -EBADMSG
-		/* count = -EBADMSG; */
+		count = -EBADMSG;
 		goto finish;
 	}
 	/*

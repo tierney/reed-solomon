@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+
 /*
  * lib/reed_solomon/reed_solomon.c
  *
@@ -38,19 +40,9 @@
  *
  */
 
-/* TODO(tierney): Avoiding the use of the kernel libraries in order to port this
- * code to userspace. */
-
-/* #include <linux/errno.h> */
-/* #include <linux/kernel.h> */
-/* #include <linux/init.h> */
-/* #include <linux/module.h> */
-/* #include <linux/rslib.h> */
-/* #include <linux/slab.h> */
 #include "rslib.h"
 
-#include <assert.h>
-#include <math.h>
+#include <errno.h>
 #include <pthread.h>
 #include <stdlib.h>
 
@@ -58,7 +50,7 @@
 static LIST_HEAD (rslist);
 /* Protection for the list */
 
-static pthread_mutex_t rslistlock;
+static pthread_mutex_t rslistlock = PTHREAD_MUTEX_INITIALIZER;
 
 #define mutex_lock(lock) if (0 != pthread_mutex_lock(lock)) { abort(); }
 #define mutex_unlock(lock) if (0 != pthread_mutex_unlock(lock)) { abort(); }
@@ -84,7 +76,7 @@ static struct rs_control *rs_init(int symsize, int gfpoly, int (*gffunc)(int),
 	int i, j, sr, root, iprim;
 
 	/* Allocate the control structure */
-	rs = (struct rs_control *)malloc(sizeof (struct rs_control));
+	rs = malloc(sizeof(struct rs_control));
 	if (rs == NULL)
 		return NULL;
 
@@ -184,6 +176,8 @@ errrs:
  */
 void free_rs(struct rs_control *rs)
 {
+	if (!rs)
+		return;
 	mutex_lock(&rslistlock);
 	rs->users--;
 	if(!rs->users) {
@@ -216,10 +210,6 @@ static struct rs_control *init_rs_internal(int symsize, int gfpoly,
 {
 	struct list_head	*tmp;
 	struct rs_control	*rs;
-
-  if (0 != pthread_mutex_init(&rslistlock, NULL)) {
-    return NULL;
-  }
   
 	/* Sanity checks */
 	if (symsize < 1)
@@ -336,7 +326,8 @@ int encode_rs8(struct rs_control *rs, uint8_t *data, int len, uint16_t *par,
  *  The syndrome and parity uses a uint16_t data type to enable
  *  symbol size > 8. The calling code must take care of decoding of the
  *  syndrome result and the received parity before calling this code.
- *  Returns the number of corrected bits or -EBADMSG for uncorrectable errors.
+ *  Returns the number of corrected symbol locations or -EBADMSG for
+ *  uncorrectable errors.
  */
 int decode_rs8(struct rs_control *rs, uint8_t *data, uint16_t *par, int len,
 	       uint16_t *s, int no_eras, int *eras_pos, uint16_t invmsk,
@@ -378,7 +369,8 @@ int encode_rs16(struct rs_control *rs, uint16_t *data, int len, uint16_t *par,
  *  @corr:	buffer to store correction bitmask on eras_pos
  *
  *  Each field in the data array contains up to symbol size bits of valid data.
- *  Returns the number of corrected bits or -EBADMSG for uncorrectable errors.
+ *  Returns the number of corrected symbol locations or -EBADMSG for
+ *  uncorrectable errors.
  */
 int decode_rs16(struct rs_control *rs, uint16_t *data, uint16_t *par, int len,
 		uint16_t *s, int no_eras, int *eras_pos, uint16_t invmsk,

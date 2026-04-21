@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+
 /**
  *
  * I grub it from linux kernel source code and fix it for user space
@@ -20,6 +22,10 @@
 #include "stddef.h"
 #include "stdint.h"
 
+#ifndef prefetch
+#define prefetch(x) (void)0
+#endif
+
 /**
  * @name from other kernel headers
  */
@@ -38,8 +44,8 @@
  * @param member     the name of the member within the struct.
  *
  */
-#define container_of(ptr, type, member) ({                      \
-        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+#define container_of(ptr, type, member) __extension__({         \
+        const __typeof__( ((type *)0)->member ) *__mptr = (ptr); \
         (type *)( (char *)__mptr - offsetof(type,member) );})
 /*@}*/
 

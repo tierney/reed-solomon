@@ -1,21 +1,25 @@
+// SPDX-License-Identifier: GPL-2.0-only
+
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 #include "rslib.h"
 
 void printf_data(uint8_t *data, size_t len) {
-  for (int i = 0; i < len; i++) {
+  for (size_t i = 0; i < len; i++) {
     std::cout << (int)data[i];
   }
   std::cout << std::endl;
 }
 
-const int kParityLen = 16;
+const int kParityLen = 32;
 
 int main(int argc, char** argv) {
-  srand(time(NULL));
+  (void)argc;
+  (void)argv;
+  srand(12345);
 
-  rs_control *rs = init_rs(8, 0x187, 0, 1, 16);
+  rs_control *rs = init_rs(8, 0x187, 0, 1, kParityLen);
 
   /* Parity buffer. Size = number of roots */
   uint16_t par[kParityLen];
@@ -25,7 +29,7 @@ int main(int argc, char** argv) {
   uint8_t orig_copy[223];
   uint8_t  data[223];
   for (int i = 0; i < 223; i++) {
-    memset(data + i, 1, 1);
+    data[i] = 1;
   }
   std::cout << "Original data:" << std::endl;
   printf_data(data, 223);
@@ -38,7 +42,7 @@ int main(int argc, char** argv) {
       nerrors++;
     }
   }
-  std::cout << "Differences: " << nerrors << std::endl;;
+  std::cout << "Differences: " << nerrors << std::endl;
   }
 
   encode_rs8 (rs, data, 223, par, 0);
@@ -55,8 +59,8 @@ int main(int argc, char** argv) {
 
   int nchanges = 0;
   for (int i = 0; i < 223; i++) {
-    if (rand() % 15 == 0) {
-      memset(data + i, rand() % 255, 1);
+    if (nchanges < 16 && rand() % 12 == 0) {
+      data[i] = rand() % 255;
       nchanges++;
     }
   }

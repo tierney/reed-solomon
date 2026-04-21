@@ -11,3 +11,30 @@
 *.lai
 *.la
 *.a
+
+# Autotools / Libtool generated files
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache/
+compile
+config.guess
+config.log
+config.status
+config.sub
+configure
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+stamp-h1
+config.h
+config.h.in
+.deps/
+.libs/
+
+# Dist / local build artifacts
+reed-solomon-*.tar.xz
+src/rs_main
+test-driver
